@@ -1,0 +1,19 @@
+{
+  "name": "collegescape-backend",
+  "version": "1.0.0",
+  "description": "college scape-university management system backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nischaynagar/College-Scape-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nischaynagar/College-Scape-backend/issues"
+  },
+  "homepage": "https://github.com/nischaynagar/College-Scape-backend#readme"
+}
