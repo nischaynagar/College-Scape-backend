@@ -21,14 +21,6 @@ app.get("/", (req, res) => {
   res.send("Welcome to collegeScape");
 });
 
-// db.connect((err) => {
-//   if (!err) {
-//     console.log("Connected");
-//   } else {
-//     console.log("Connection failed");
-//   }
-// });
-
 // app.get("/api/auth", (req, res) => {
 //For authentication of Admin
 
@@ -52,14 +44,67 @@ app.get("/", (req, res) => {
 // });
 // });
 
-// const UserName = "Nischay";
-// const name = "req.body.EmpName";
-// const pass = "req.body.EmpPass";
-// const type = "req.body.type";
-// const sqlInsert =
-//   "INSERT INTO employee(EmpUserName,EmpName,EmpPass,EmpType) VALUES (?,?,?,?);";
-// const sqlAuth = "SELECT * FROM employee WHERE EmpUserName=?";
-// db.query(sqlInsert, [UserName, name, pass, type], (error, result1) => {});
+// const UserName = "admin@123";
+// const Name = "Nischay Nagar";
+// const Password = "123";
+// const sqlInsert = "INSERT INTO admin(Name,UserName,Password) VALUES (?,?,?);";
+// const sqlAuth = "SELECT * FROM admin WHERE UserName=?";
+// db.query(sqlInsert, [Name, UserName, Password], (error, result1) => {});
+
+// app.get("/api/authp", (req, res) => {
+//For authentication of Admin
+// const username = "admin@123";
+// const name = "Nischay Nagar";
+// const pass = "123";
+// const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
+// db.query(sqlAuth, [username], (err, result) => {
+//   if (result.length > 0) {
+//     if (pass === result[0].Password) {
+//       console.log("username and pass matched");
+//       res.send({
+//         result: 1,
+//         username: result[0].UserName,
+//         name: result[0].Name,
+//       });
+//     } else {
+//       console.log("username and pass dont match");
+//       res.send({
+//         result: 2,
+//       });
+//     }
+//   } else {
+//     console.log("No user with this username exists");
+//     res.status(400);
+//     res.send("3");
+//   }
+// });
+// });
+
+const username = "admin@123";
+const name = "Nischay Nagar";
+const pass = "1234";
+const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
+db.query(sqlAuth, [username], (err, result) => {
+  if (result.length > 0) {
+    if (pass === result[0].Password) {
+      console.log("username and pass matched");
+      // res.send({
+      //   result: 1,
+      //   username: result[0].UserName,
+      //   name: result[0].Name,
+      // });
+    } else {
+      console.log("username and pass dont match");
+      // res.send({
+      //   result: 2,
+      // });
+    }
+  } else {
+    console.log("No user with this username exists");
+    // res.status(400);
+    // res.send("3");
+  }
+});
 
 app.listen(port, () => {
   console.log(`College Scape listening at http://localhost:${port}`);
