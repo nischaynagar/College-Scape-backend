@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to collegeScape");
 });
 
-// For authentication of Admin
+// For authentication of Admin(prats)
 app.post("/api/auth", (req, res) => {
   console.log("R:", req.body, " -> ", req.body.AdminUserName);
   // let sq = `SELECT * FROM admin WHERE UserName=${req.body.AdminUserName}`;
@@ -107,33 +107,33 @@ app.get("/api/studs", (req, res) => {
 // });
 // });
 
-// auth
-app.get("/api/auth", (req, res) => {
-  const username = req.query.AdminUserName;
-  const pass = req.query.AdminPassword;
-  const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
-  db.query(sqlAuth, [username], (err, result) => {
-    if (result.length > 0) {
-      if (pass === result[0].Password) {
-        console.log("username and pass matched");
-        res.send({
-          result: 1,
-          username: result[0].UserName,
-          name: result[0].Name,
-        });
-      } else {
-        console.log("username and pass dont match");
-        res.send({
-          result: 2,
-        });
-      }
-    } else {
-      console.log("No user with this username exists");
-      res.status(400);
-      res.send("3");
-    }
-  });
-});
+// // auth by rahul
+// app.get("/api/auth", (req, res) => {
+//   const username = req.query.AdminUserName;
+//   const pass = req.query.AdminPassword;
+//   const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
+//   db.query(sqlAuth, [username], (err, result) => {
+//     if (result.length > 0) {
+//       if (pass === result[0].Password) {
+//         console.log("username and pass matched");
+//         res.send({
+//           result: 1,
+//           username: result[0].UserName,
+//           name: result[0].Name,
+//         });
+//       } else {
+//         console.log("username and pass dont match");
+//         res.send({
+//           result: 2,
+//         });
+//       }
+//     } else {
+//       console.log("No user with this username exists");
+//       res.status(400);
+//       res.send("3");
+//     }
+//   });
+// });
 
 // student insert
 app.post("/api/inserts", (req, res) => {                  
