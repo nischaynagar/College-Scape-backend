@@ -21,28 +21,51 @@ app.get("/", (req, res) => {
   res.send("Welcome to collegeScape");
 });
 
-// app.get("/api/auth", (req, res) => {
-//For authentication of Admin
+// For authentication of Admin
+app.post("/api/auth", (req, res) => {
+  console.log("R:", req.body, " -> ", req.body.AdminUserName);
+  // let sq = `SELECT * FROM admin WHERE UserName=${req.body.AdminUserName}`;
+  db.query(sqlAuth, [req.body.AdminUserName], (err, result) => {
+    console.log("RR: ", result);
+    if(!result) {
+      res.send("L*** lag gaye"); return;
+    }
 
-// db.query(sqlAuth, [name], (err, result) => {
-//   if (result.length > 0) {
-//     if (pass === result[0].AdminPass) {
-//       res.send({
-//         result: 1,
-//         username: result[0].AdminUserName,
-//         name: result[0].AdminName,
-//       });
-//     } else {
-//       res.send({
-//         result: 2,
-//       });
-//     }
-//   } else {
-//     res.status(400);
-//     res.send("3");
-//   }
-// });
-// });
+    if (result.length > 0) {
+      if (req.body.AdminPassword === result[0].Password) {
+        res.send({
+          result: 1,
+          username: result[0].AdminUserName,
+          name: result[0].AdminName,
+        });
+      } else {
+        res.send({
+          result: 2,
+        });
+      }
+    } else {
+      res.status(400);
+      res.send("3");
+    }
+  });
+});
+
+
+app.get("/api/studs", (req, res) => {
+  console.log("get students");
+  let myq = "select * from studentlist";
+  db.query(myq, [], (err, result) => {
+    if(err){
+      console.log("Err:", err);
+      res.send("Bad time bro");
+    }
+    else{
+      console.log("RS: ", result);
+      res.send(result);
+    }
+  });
+});
+
 // register
 // const UserName = "admin@rahul";
 // const Name = "Rahul Roy";
