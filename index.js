@@ -43,13 +43,17 @@ app.get("/", (req, res) => {
 //   }
 // });
 // });
-
-// const UserName = "admin@123";
-// const Name = "Nischay Nagar";
+// register
+// const UserName = "admin@rahul";
+// const Name = "Rahul Roy";
 // const Password = "123";
 // const sqlInsert = "INSERT INTO admin(Name,UserName,Password) VALUES (?,?,?);";
 // const sqlAuth = "SELECT * FROM admin WHERE UserName=?";
-// db.query(sqlInsert, [Name, UserName, Password], (error, result1) => {});
+// db.query(sqlInsert, [Name, UserName, Password], (error, result1) => {
+//   if (result1) {
+//     console.log("User `${UserName}` Created");
+//   }
+// });
 
 // app.get("/api/authp", (req, res) => {
 //For authentication of Admin
@@ -80,29 +84,20 @@ app.get("/", (req, res) => {
 // });
 // });
 
+// auth
 const username = "admin@123";
 const name = "Nischay Nagar";
-const pass = "1234";
+const pass = "123";
 const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
 db.query(sqlAuth, [username], (err, result) => {
   if (result.length > 0) {
     if (pass === result[0].Password) {
       console.log("username and pass matched");
-      // res.send({
-      //   result: 1,
-      //   username: result[0].UserName,
-      //   name: result[0].Name,
-      // });
     } else {
       console.log("username and pass dont match");
-      // res.send({
-      //   result: 2,
-      // });
     }
   } else {
     console.log("No user with this username exists");
-    // res.status(400);
-    // res.send("3");
   }
 });
 
