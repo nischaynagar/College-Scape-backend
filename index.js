@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql = require("mysql");
 const app = express();
-const port = 3000;
+const port = 3020;
 
 var db = mysql.createPool({
   host: "sql6.freesqldatabase.com",
@@ -44,14 +44,14 @@ app.get("/", (req, res) => {
 // });
 // });
 // register
-// const UserName = "admin@rahul";
-// const Name = "Rahul Roy";
+// const UserName = "admin@vinit";
+// const Name = "Vinit Wag";
 // const Password = "123";
 // const sqlInsert = "INSERT INTO admin(Name,UserName,Password) VALUES (?,?,?);";
 // const sqlAuth = "SELECT * FROM admin WHERE UserName=?";
 // db.query(sqlInsert, [Name, UserName, Password], (error, result1) => {
 //   if (result1) {
-//     console.log("User `${UserName}` Created");
+//     console.log("User  Created");
 //   }
 // });
 
@@ -85,20 +85,31 @@ app.get("/", (req, res) => {
 // });
 
 // auth
-const username = "admin@123";
-const name = "Nischay Nagar";
-const pass = "123";
-const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
-db.query(sqlAuth, [username], (err, result) => {
-  if (result.length > 0) {
-    if (pass === result[0].Password) {
-      console.log("username and pass matched");
+app.get("/api/auth", (req, res) => {
+  const username = req.query.AdminUserName;
+  const pass = req.query.AdminPassword;
+  const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
+  db.query(sqlAuth, [username], (err, result) => {
+    if (result.length > 0) {
+      if (pass === result[0].Password) {
+        console.log("username and pass matched");
+        res.send({
+          result: 1,
+          username: result[0].UserName,
+          name: result[0].Name,
+        });
+      } else {
+        console.log("username and pass dont match");
+        res.send({
+          result: 2,
+        });
+      }
     } else {
-      console.log("username and pass dont match");
+      console.log("No user with this username exists");
+      res.status(400);
+      res.send("3");
     }
-  } else {
-    console.log("No user with this username exists");
-  }
+  });
 });
 
 app.listen(port, () => {
