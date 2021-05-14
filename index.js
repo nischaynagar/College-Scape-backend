@@ -112,6 +112,58 @@ app.get("/api/auth", (req, res) => {
   });
 });
 
+// student insert
+app.post("/api/inserts", (req, res) => {                  
+  const firstname = req.body.firstName;
+  const lastname = req.body.lastName;
+  const ID = req.body.id;
+  const email = req.body.emailAddress;
+  const gender = req.body.sex;
+  const contact = req.body.phoneno;
+  const batch = req.body.currentbatch;
+  const dateofbirth = req.body.doB;
+  
+  
+  const sqlInsert = "INSERT INTO studentlist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);"
+  const sqlAuth = "SELECT * FROM studentlist WHERE firstName=?"
+  db.query(sqlAuth, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (err, result) => {
+      if (result.length === 0) {
+          db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
+              res.send("success");
+          })
+      }
+      else {
+          res.send("2");
+      }
+  })
+});
+
+//faculty insert
+app.post("/api/insertf", (req, res) => {               
+  const firstname = req.body.firstName;
+  const lastname = req.body.lastName;
+  const ID = req.body.id;
+  const email = req.body.emailAddress;
+  const gender = req.body.sex;
+  const contact = req.body.phoneno;
+  const batch = req.body.currentbatch;
+  const dateofbirth = req.body.doB;
+  
+  
+  const sqlInsert = "INSERT INTO facultylist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);"
+  const sqlAuth = "SELECT * FROM facultylist WHERE firstName=?"
+  db.query(sqlAuth, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (err, result) => {
+      if (result.length === 0) {
+          db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
+              res.send("successful");
+          })
+      }
+      else {
+          res.send("2");
+      }
+  })
+});
+
 app.listen(port, () => {
   console.log(`College Scape listening at http://localhost:${port}`);
 });
