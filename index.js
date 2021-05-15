@@ -27,7 +27,7 @@ app.post("/api/auth", (req, res) => {
   // let sq = `SELECT * FROM admin WHERE UserName=${req.body.AdminUserName}`;
   db.query(sqlAuth, [req.body.AdminUserName], (err, result) => {
     console.log("RR: ", result);
-    if(!result) {
+    if (!result) {
       res.send("L*** lag gaye"); return;
     }
 
@@ -55,11 +55,11 @@ app.get("/api/studs", (req, res) => {
   console.log("get students");
   let myq = "select * from studentlist";
   db.query(myq, [], (err, result) => {
-    if(err){
+    if (err) {
       console.log("Err:", err);
       res.send("Bad time bro");
     }
-    else{
+    else {
       console.log("RS: ", result);
       res.send(result);
     }
@@ -136,7 +136,7 @@ app.get("/api/studs", (req, res) => {
 // });
 
 // student insert
-app.post("/api/inserts", (req, res) => {                  
+app.post("/api/inserts", (req, res) => {
   const firstname = req.body.firstName;
   const lastname = req.body.lastName;
   const ID = req.body.id;
@@ -145,24 +145,24 @@ app.post("/api/inserts", (req, res) => {
   const contact = req.body.phoneno;
   const batch = req.body.currentbatch;
   const dateofbirth = req.body.doB;
-  
-  
+
+
   const sqlInsert = "INSERT INTO studentlist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);"
   const sqlAuth = "SELECT * FROM studentlist WHERE firstName=?"
-  db.query(sqlAuth, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (err, result) => {
-      if (result.length === 0) {
-          db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
-              res.send("success");
-          })
-      }
-      else {
-          res.send("2");
-      }
+  db.query(sqlAuth, [ID], (err, result) => {
+    if (result.length === 0) {
+      db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
+        res.send("success");
+      })
+    }
+    else {
+      res.send("2");
+    }
   })
 });
 
 //faculty insert
-app.post("/api/insertf", (req, res) => {               
+app.post("/api/insertf", (req, res) => {
   const firstname = req.body.firstName;
   const lastname = req.body.lastName;
   const ID = req.body.id;
@@ -171,19 +171,53 @@ app.post("/api/insertf", (req, res) => {
   const contact = req.body.phoneno;
   const batch = req.body.currentbatch;
   const dateofbirth = req.body.doB;
-  
-  
+
+
   const sqlInsert = "INSERT INTO facultylist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);"
   const sqlAuth = "SELECT * FROM facultylist WHERE firstName=?"
-  db.query(sqlAuth, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (err, result) => {
-      if (result.length === 0) {
-          db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
-              res.send("successful");
-          })
-      }
-      else {
-          res.send("2");
-      }
+  db.query(sqlAuth, [ID], (err, result) => {
+    if (result.length === 0) {
+      db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
+        res.send("successful");
+      })
+    }
+    else {
+      res.send("2");
+    }
+  })
+});
+
+// delete student
+app.delete("/api/deletestudent", (req, res) => {                    
+  const ID = req.body.id;
+  const sqldelete = "DELETE FROM studentlist WHERE id=?";
+  db.query(sqldelete, [ID], (err, result) => {
+    console.log(result);
+  })
+});
+
+// delete faculty
+app.delete("/api/deletefaculty", (req, res) => {                    
+  const ID = req.body.id;
+  const sqldelete = "DELETE FROM facultylist WHERE id=?";
+  db.query(sqldelete, [ID], (err, result) => {
+    console.log(result);
+  })
+});
+
+// view list of students
+app.get("/api/view_students", (req, res) => {                       
+    const sqlget = "SELECT * FROM studentlist";
+    db.query(sqlget, (err, result) => {
+        console.log(result);
+    })
+});
+
+// view list of faculties
+app.get("/api/view_students", (req, res) => {                       
+  const sqlget = "SELECT * FROM facultylist";
+  db.query(sqlget, (err, result) => {
+      console.log(result);
   })
 });
 
