@@ -22,44 +22,42 @@ app.get("/", (req, res) => {
 });
 
 // For authentication of Admin(prats)
-app.post("/api/auth", (req, res) => {
-  console.log("R:", req.body, " -> ", req.body.AdminUserName);
-  // let sq = `SELECT * FROM admin WHERE UserName=${req.body.AdminUserName}`;
-  db.query(sqlAuth, [req.body.AdminUserName], (err, result) => {
-    console.log("RR: ", result);
-    if(!result) {
-      res.send("L*** lag gaye"); return;
-    }
+// app.post("/api/auth", (req, res) => {
+//   console.log("R:", req.body, " -> ", req.body.AdminUserName);
+//   // let sq = `SELECT * FROM admin WHERE UserName=${req.body.AdminUserName}`;
+//   db.query(sqlAuth, [req.body.AdminUserName], (err, result) => {
+//     console.log("RR: ", result);
+//     if(!result) {
+//       res.send("L*** lag gaye"); return;
+//     }
 
-    if (result.length > 0) {
-      if (req.body.AdminPassword === result[0].Password) {
-        res.send({
-          result: 1,
-          username: result[0].AdminUserName,
-          name: result[0].AdminName,
-        });
-      } else {
-        res.send({
-          result: 2,
-        });
-      }
-    } else {
-      res.status(400);
-      res.send("3");
-    }
-  });
-});
-
+//     if (result.length > 0) {
+//       if (req.body.AdminPassword === result[0].Password) {
+//         res.send({
+//           result: 1,
+//           username: result[0].AdminUserName,
+//           name: result[0].AdminName,
+//         });
+//       } else {
+//         res.send({
+//           result: 2,
+//         });
+//       }
+//     } else {
+//       res.status(400);
+//       res.send("3");
+//     }
+//   });
+// });
 
 app.get("/api/studs", (req, res) => {
   console.log("get students");
   let myq = "select * from studentlist";
   db.query(myq, [], (err, result) => {
-    if(err){
+    if (err) {
       console.log("Err:", err);
       res.send("Bad time bro");
-    }
-    else{
+    } else {
       console.log("RS: ", result);
       res.send(result);
     }
@@ -108,35 +106,35 @@ app.get("/api/studs", (req, res) => {
 // });
 
 // // auth by rahul
-// app.get("/api/auth", (req, res) => {
-//   const username = req.query.AdminUserName;
-//   const pass = req.query.AdminPassword;
-//   const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
-//   db.query(sqlAuth, [username], (err, result) => {
-//     if (result.length > 0) {
-//       if (pass === result[0].Password) {
-//         console.log("username and pass matched");
-//         res.send({
-//           result: 1,
-//           username: result[0].UserName,
-//           name: result[0].Name,
-//         });
-//       } else {
-//         console.log("username and pass dont match");
-//         res.send({
-//           result: 2,
-//         });
-//       }
-//     } else {
-//       console.log("No user with this username exists");
-//       res.status(400);
-//       res.send("3");
-//     }
-//   });
-// });
+app.get("/api/auth", (req, res) => {
+  const username = req.query.AdminUserName;
+  const pass = req.query.AdminPassword;
+  const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
+  db.query(sqlAuth, [username], (err, result) => {
+    if (result.length > 0) {
+      if (pass === result[0].Password) {
+        console.log("username and pass matched");
+        res.send({
+          result: 1,
+          username: result[0].UserName,
+          name: result[0].Name,
+        });
+      } else {
+        console.log("username and pass dont match");
+        res.send({
+          result: 2,
+        });
+      }
+    } else {
+      console.log("No user with this username exists");
+      res.status(400);
+      res.send("3");
+    }
+  });
+});
 
 // student insert
-app.post("/api/inserts", (req, res) => {                  
+app.post("/api/inserts", (req, res) => {
   const firstname = req.body.firstName;
   const lastname = req.body.lastName;
   const ID = req.body.id;
@@ -145,24 +143,31 @@ app.post("/api/inserts", (req, res) => {
   const contact = req.body.phoneno;
   const batch = req.body.currentbatch;
   const dateofbirth = req.body.doB;
-  
-  
-  const sqlInsert = "INSERT INTO studentlist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);"
-  const sqlAuth = "SELECT * FROM studentlist WHERE firstName=?"
-  db.query(sqlAuth, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (err, result) => {
+
+  const sqlInsert =
+    "INSERT INTO studentlist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);";
+  const sqlAuth = "SELECT * FROM studentlist WHERE firstName=?";
+  db.query(
+    sqlAuth,
+    [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
+    (err, result) => {
       if (result.length === 0) {
-          db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
-              res.send("success");
-          })
+        db.query(
+          sqlInsert,
+          [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
+          (error, result1) => {
+            res.send("success");
+          }
+        );
+      } else {
+        res.send("2");
       }
-      else {
-          res.send("2");
-      }
-  })
+    }
+  );
 });
 
 //faculty insert
-app.post("/api/insertf", (req, res) => {               
+app.post("/api/insertf", (req, res) => {
   const firstname = req.body.firstName;
   const lastname = req.body.lastName;
   const ID = req.body.id;
@@ -171,20 +176,61 @@ app.post("/api/insertf", (req, res) => {
   const contact = req.body.phoneno;
   const batch = req.body.currentbatch;
   const dateofbirth = req.body.doB;
-  
-  
-  const sqlInsert = "INSERT INTO facultylist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);"
-  const sqlAuth = "SELECT * FROM facultylist WHERE firstName=?"
-  db.query(sqlAuth, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (err, result) => {
+
+  const sqlInsert =
+    "INSERT INTO facultylist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);";
+  const sqlAuth = "SELECT * FROM facultylist WHERE firstName=?";
+  db.query(
+    sqlAuth,
+    [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
+    (err, result) => {
       if (result.length === 0) {
-          db.query(sqlInsert, [firstname, lastname, ID, email, gender, contact, batch, dateofbirth], (error, result1) => {
-              res.send("successful");
-          })
+        db.query(
+          sqlInsert,
+          [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
+          (error, result1) => {
+            res.send("successful");
+          }
+        );
+      } else {
+        res.send("2");
       }
-      else {
-          res.send("2");
-      }
-  })
+    }
+  );
+});
+
+// delete student
+app.delete("/api/deletestudent", (req, res) => {
+  const ID = req.body.id;
+  const sqldelete = "DELETE FROM studentlist WHERE id=?";
+  db.query(sqldelete, [ID], (err, result) => {
+    console.log(result);
+  });
+});
+
+// delete faculty
+app.delete("/api/deletefaculty", (req, res) => {
+  const ID = req.body.id;
+  const sqldelete = "DELETE FROM facultylist WHERE id=?";
+  db.query(sqldelete, [ID], (err, result) => {
+    console.log(result);
+  });
+});
+
+// view list of students
+app.get("/api/view_students", (req, res) => {
+  const sqlget = "SELECT * FROM studentlist";
+  db.query(sqlget, (err, result) => {
+    console.log(result);
+  });
+});
+
+// view list of faculties
+app.get("/api/view_students", (req, res) => {
+  const sqlget = "SELECT * FROM facultylist";
+  db.query(sqlget, (err, result) => {
+    console.log(result);
+  });
 });
 
 app.listen(port, () => {
