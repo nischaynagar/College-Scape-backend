@@ -65,24 +65,24 @@ app.get("/api/studs", (req, res) => {
 });
 
 // register
-const UserName = "admin@123";
-const firstName = "Nischay";
-const lastName = "Nagar";
-const Password = "123";
-const email = "admin123@cs.in";
-const contact = 3221213123;
-const sqlInsert =
-  "INSERT INTO admin(UserName,Password, firstName, lastName, email, contact) VALUES (?,?,?,?,?,?);";
-const sqlAuth = "SELECT * FROM admin WHERE UserName=?";
-db.query(
-  sqlInsert,
-  [UserName, Password, firstName, lastName, email, contact],
-  (error, result1) => {
-    if (result1) {
-      console.log("User  Created");
-    }
-  }
-);
+// const UserName = "admin@123";
+// const firstName = "Nischay";
+// const lastName = "Nagar";
+// const Password = "123";
+// const email = "admin123@cs.in";
+// const contact = 3221213123;
+// const sqlInsert =
+//   "INSERT INTO admin(UserName,Password, firstName, lastName, email, contact) VALUES (?,?,?,?,?,?);";
+// const sqlAuth = "SELECT * FROM admin WHERE UserName=?";
+// db.query(
+//   sqlInsert,
+//   [UserName, Password, firstName, lastName, email, contact],
+//   (error, result1) => {
+//     if (result1) {
+//       console.log("User  Created");
+//     }
+//   }
+// );
 
 // app.get("/api/authp", (req, res) => {
 //For authentication of Admin
@@ -126,7 +126,10 @@ app.get("/api/auth", (req, res) => {
         res.send({
           result: 1,
           username: result[0].UserName,
-          name: result[0].Name,
+          firstName: result[0].firstName,
+          lastName: result[0].lastName,
+          email: result[0].email,
+          contact: result[0].contact,
         });
       } else {
         console.log("username and pass dont match");
