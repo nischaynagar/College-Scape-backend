@@ -50,6 +50,7 @@ app.get("/", (req, res) => {
 //   });
 // });
 
+// display student list
 app.get("/api/studs", (req, res) => {
   console.log("get students");
   let myq = "select * from studentlist";
@@ -59,6 +60,21 @@ app.get("/api/studs", (req, res) => {
       res.send("Bad time bro");
     } else {
       console.log("Student list ", result);
+      res.send(result);
+    }
+  });
+});
+
+// display faculty list
+app.get("/api/facts", (req, res) => {
+  console.log("get faculties");
+  let myq = "select * from facultylist";
+  db.query(myq, [], (err, result) => {
+    if (err) {
+      console.log("Err:", err);
+      res.send("Bad time bro");
+    } else {
+      console.log("Faculty list ", result);
       res.send(result);
     }
   });
@@ -230,24 +246,48 @@ app.post("/api/insertf", (req, res) => {
   const batch = req.body.currentbatch;
   const dateofbirth = req.body.doB;
 
+  console.log(
+    "info received : ",
+    firstname,
+    " ",
+    lastname,
+    " ",
+    ID,
+    " ",
+    email,
+    " ",
+    gender,
+    " ",
+    contact,
+    " ",
+    batch,
+    " ",
+    dateofbirth
+  );
+
+  const sqlCheck = "SELECT * FROM facultylist";
   const sqlInsert =
-    "INSERT INTO facultylist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);";
-  const sqlAuth = "SELECT * FROM facultylist WHERE firstName=?";
+    "INSERT INTO facultylist(firstName,lastName,id,email,contact,gender,batch,DOB) VALUES (?,?,?,?,?,?,?,?);";
+  // const sqlAuth = "SELECT * FROM studentlist WHERE firstName=?";
   db.query(
-    sqlAuth,
-    [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
+    sqlInsert,
+    [firstname, lastname, ID, email, contact, gender, batch, dateofbirth],
     (err, result) => {
-      if (result.length === 0) {
-        db.query(
-          sqlInsert,
-          [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
-          (error, result1) => {
-            res.send("successful");
+      if (err) {
+        // res.send("DB insert query error");
+        console.log(err);
+        db.query(sqlCheck, (e, r) => {
+          if (e) {
+            r.send("extracting info fail");
+            return;
           }
-        );
-      } else {
-        res.send("2");
+          console.log(r);
+        });
+        return;
       }
+      console.log(result);
+      res.send("success");
+      console.log("Successfully inserted data");
     }
   );
 });
