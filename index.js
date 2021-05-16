@@ -58,7 +58,7 @@ app.get("/api/studs", (req, res) => {
       console.log("Err:", err);
       res.send("Bad time bro");
     } else {
-      console.log("RS: ", result);
+      console.log("Student list ", result);
       res.send(result);
     }
   });
@@ -109,6 +109,7 @@ app.get("/api/studs", (req, res) => {
 app.get("/api/auth", (req, res) => {
   const username = req.query.AdminUserName;
   const pass = req.query.AdminPassword;
+  console.log("inside api auth");
   const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
   db.query(sqlAuth, [username], (err, result) => {
     if (result.length > 0) {
@@ -143,27 +144,55 @@ app.post("/api/inserts", (req, res) => {
   const contact = req.body.phoneno;
   const batch = req.body.currentbatch;
   const dateofbirth = req.body.doB;
+  
+  console.log("info received : ",firstname," ",lastname," ",ID," ",email," ",gender," ",contact," ",batch," ",dateofbirth);
 
+  const sqlCheck="SELECT * FROM studentlist";
   const sqlInsert =
-    "INSERT INTO studentlist(firstName,lastName,id,emailAddress,sex,phoneno,currentbatch,doB) VALUES (?,?,?,?,?,?,?,?);";
+    "INSERT INTO studentlist(firstName,lastName,id,email,gender,contact,batch,DOB) VALUES (?,?,?,?,?,?,?,?);";
   const sqlAuth = "SELECT * FROM studentlist WHERE firstName=?";
-  db.query(
-    sqlAuth,
-    [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
-    (err, result) => {
-      if (result.length === 0) {
+  db.query(sqlInsert,[firstname, lastname, ID, email, gender, contact, batch, dateofbirth],(err,result)=>
+    {
+      if(err){
+        // res.send("DB insert query error");
+        console.log(err);
         db.query(
-          sqlInsert,
-          [firstname, lastname, ID, email, gender, contact, batch, dateofbirth],
-          (error, result1) => {
-            res.send("success");
+          sqlCheck,
+          (e,r)=>
+          {
+            if(e)
+              {
+                r.send("extracting info failed");
+                return;
+              }
+            console.log(r);  
           }
         );
-      } else {
-        res.send("2");
+        return;
       }
+       console.log(result);
+       res.send("success");
+       console.log("Successfully inserted data");      
     }
   );
+});
+
+//update student
+app.put("/api/update_student", (req, res) => { 
+  console.log("inside update stud info method");     
+  const ID = req.body.id;
+  const emailaddr = req.body.email;
+  const sqlUpdate = "UPDATE studentlist SET email=? WHERE id =?;"
+  db.query(sqlUpdate, [emailaddr, ID], (err, result) => {
+      if(err){
+        console.log(err);
+        res.send("failed to update data");
+        return;
+      }
+      console.log("email id changed to: ",emailaddr);
+      res.send("success")
+
+  })
 });
 
 //faculty insert
@@ -226,13 +255,162 @@ app.get("/api/view_students", (req, res) => {
 });
 
 // view list of faculties
-app.get("/api/view_students", (req, res) => {
+app.get("/api/view_faculties", (req, res) => {
   const sqlget = "SELECT * FROM facultylist";
   db.query(sqlget, (err, result) => {
     console.log(result);
   });
 });
 
+// get total number of students
+// app.get("/api/count_students", (req, res) => {           
+
+//   const sqlget = "SELECT COUNT(*) FROM studentlist"
+//   db.query(sqlget, (err, result) => {
+//       res.send(result)
+//   })
+// });
+
+// get list of courses
+app.get("/api/list_courses", (req, res) => {           
+
+  const sqlget = "SELECT COUNT(*) FROM courselist"
+  db.query(sqlget, (err, result) => {
+      res.send(result)
+  })
+});
+
+// get list of all faculties
+app.get("/api/list_faculties", (req, res) => {           
+
+  const sqlget = "SELECT COUNT(*) FROM facultylist"
+  db.query(sqlget, [TName], (err, result) => {
+      res.send(result)
+  })
+});
+
+// get total number of students
+app.get("/api/count_students", (req, res) => {           
+
+  //var ctr_stud=0,ctr_course=0,ctr_faculty=0;
+  //const count_array=[]
+ // console.log("in count student");
+  const sqlgets = "SELECT COUNT(*) FROM studentlist"
+  db.query(sqlgets, (err, result1) => {
+      // res.send(result)
+      if(err){
+        console.log(err);
+        res.send("error in getting count stud");
+        return;
+      }
+      var string=JSON.stringify(result1);
+      // console.log('>> string: ', string );
+      var json =  JSON.parse(string);
+      //console.log('>> json: ', json);
+      const ctr_stud=Object.values(json[0])[0];
+    //  console.log(ctr_stud);
+     console.log("count stud",ctr_stud);
+     res.send({
+       result: ctr_stud});
+     //count_array.push(ctr_stud);
+  })
+
+  // const sqlgetc= "SELECT COUNT(*) FROM courselist"
+  // db.query(sqlgetc, (err, result2) => {
+
+  //     // res.send(result)
+  //     if(err){
+  //       console.log(err);
+  //       res.send("error in getting count stud");
+  //       return;
+  //     }    
+  //     var string=JSON.stringify(result2);
+  //     // console.log('>> string: ', string );
+  //     var json =  JSON.parse(string);
+  //     //console.log('>> json: ', json);
+  //    ctr_course=Object.values(json[0])[0];
+  //   //  console.log(result1);
+  //     console.log("count course",ctr_course);
+  //     count_array.push(ctr_course);
+  // })
+
+  // const sqlgetf= "SELECT COUNT(*) FROM facultylist"
+  // db.query(sqlgetf, (err, result3) => {
+  //     // res.send(result)
+  //     if(err){
+  //       console.log(err);
+  //       res.send("error in getting count stud");
+  //       return;
+  //     }    
+  //     var string=JSON.stringify(result3);
+  //     // console.log('>> string: ', string );
+  //     var json =  JSON.parse(string);
+  //     //console.log('>> json: ', json);
+  //     ctr_faculty=Object.values(json[0])[0];
+  //   //  console.log(result1);
+  //     console.log("count faculty",ctr_faculty);
+
+  //    count_array.push(ctr_faculty);
+  // }) 
+  //console.log("count faculty",ctr_faculty);
+  // res.send({
+  //   result: count_array,
+  //   // count_student: ctr_stud,
+  //   // count_courses: ctr_course,
+  //   // count_faculty: ctr_faculty
+  // })
+
+});
+
+// get total number of courses
+app.get("/api/count_courses", (req, res) => {  
+
+  const sqlgetc= "SELECT COUNT(*) FROM courselist";
+  db.query(sqlgetc, (err, result2) => {
+
+      // res.send(result)
+      if(err){
+        console.log(err);
+        res.send("error in getting count stud");
+        return;
+      }    
+      var string=JSON.stringify(result2);
+      // console.log('>> string: ', string );
+      var json =  JSON.parse(string);
+      //console.log('>> json: ', json);
+     const ctr_course=Object.values(json[0])[0];
+    //  console.log(result1);
+      console.log("count course",ctr_course);
+
+      res.send({
+        result: ctr_course});      
+      // count_array.push(ctr_course);
+  })
+});
+
+// get total number of faculties
+app.get("/api/count_faculties", (req, res) => {           
+  const sqlgetf= "SELECT COUNT(*) FROM facultylist"
+  db.query(sqlgetf, (err, result3) => {
+      // res.send(result)
+      if(err){
+        console.log(err);
+        res.send("error in getting count stud");
+        return;
+      }    
+      var string=JSON.stringify(result3);
+      // console.log('>> string: ', string );
+      var json =  JSON.parse(string);
+      //console.log('>> json: ', json);
+     const ctr_faculty=Object.values(json[0])[0];
+    //  console.log(result1);
+      console.log("count faculty",ctr_faculty);
+      res.send({
+        result: ctr_faculty});
+    //  count_array.push(ctr_faculty);
+  }) 
+  // console.log("count faculty",ctr_faculty);
+});
 app.listen(port, () => {
   console.log(`College Scape listening at http://localhost:${port}`);
 });
