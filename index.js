@@ -59,7 +59,7 @@ app.get("/api/studs", (req, res) => {
       console.log("Err:", err);
       res.send("Bad time bro");
     } else {
-      console.log("Student list ", result);
+      // console.log("Student list ", result);
       res.send(result);
     }
   });
@@ -293,13 +293,13 @@ app.post("/api/insertf", (req, res) => {
 });
 
 // delete student
-app.delete("/api/deletestudent", (req, res) => {
-  const ID = req.body.id;
-  const sqldelete = "DELETE FROM studentlist WHERE id=?";
-  db.query(sqldelete, [ID], (err, result) => {
-    console.log(result);
-  });
-});
+// app.delete("/api/deletestudent", (req, res) => {
+//   const ID = req.body.id;
+//   const sqldelete = "DELETE FROM studentlist WHERE id=?";
+//   db.query(sqldelete, [ID], (err, result) => {
+//     console.log(result);
+//   });
+// });
 
 // delete faculty
 app.delete("/api/deletefaculty", (req, res) => {
@@ -314,7 +314,7 @@ app.delete("/api/deletefaculty", (req, res) => {
 app.get("/api/view_students", (req, res) => {
   const sqlget = "SELECT * FROM studentlist";
   db.query(sqlget, (err, result) => {
-    console.log(result);
+    // console.log(result);
   });
 });
 
@@ -471,6 +471,52 @@ app.get("/api/count_faculties", (req, res) => {
     //  count_array.push(ctr_faculty);
   });
   // console.log("count faculty",ctr_faculty);
+});
+
+app.post("/api/studentid", (req, res) => {
+  const id = req.body.StudentID;
+  console.log("inside api auth id: ",id);
+  const sqlAuth = "SELECT * FROM studentlist WHERE id=?;";
+  db.query(sqlAuth, [id], (err, result) => {
+    if(!err){
+        console.log("student sent");
+        res.send(result);
+    } else {
+      console.log("No student with this id exists",err);
+      res.status(400);
+      res.send("3");
+    }
+  });
+});
+app.post("/api/deletes", (req, res) => {
+  
+  const id = req.body.StudentID;
+  console.log("inside api delete id: ",id);
+  const sqlAuth = "DELETE FROM studentlist WHERE id=?;";
+  db.query(sqlAuth, [id], (err, result) => {
+    if(!err){
+        console.log("student deleted");
+        res.send(result);
+    } else {
+      console.log("invalid id",err);
+      res.send("bekaar");
+    }
+  });
+});
+app.post("/api/deletef", (req, res) => {
+  
+  const id = req.body.FacultyID;
+  console.log("inside faculty api delete id: ",id);
+  const sqlAuth = "DELETE FROM facultylist WHERE id=?;";
+  db.query(sqlAuth, [id], (err, result) => {
+    if(!err){
+        console.log("faculty deleted");
+        res.send(result);
+    } else {
+      console.log("invalid id",err);
+      res.send("bekaar");
+    }
+  });
 });
 app.listen(port, () => {
   console.log(`College Scape listening at http://localhost:${port}`);
