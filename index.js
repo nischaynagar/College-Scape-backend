@@ -244,12 +244,15 @@ app.put("/api/update_admin", (req, res) => {
   const email = req.body.email;
   const contact = req.body.contact;
   const sqlAssign =
-    "update admin set (firstName,lastName,email, contact) VALUES (?,?,?,?) where (username) values (?);";
+    "UPDATE admin SET firstName = ?, lastName = ? ,email = ? , contact = ?  WHERE UserName = ? ;";
   db.query(
     sqlAssign,
     [firstName, lastName, email, contact, username],
     (err, result) => {
       res.send("success");
+      if (result) {
+        console.log("Admin info Updated");
+      }
     }
   );
 });
