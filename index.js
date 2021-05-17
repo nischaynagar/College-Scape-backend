@@ -235,6 +235,25 @@ app.put("/api/update_student", (req, res) => {
   });
 });
 
+//update admin
+app.put("/api/update_admin", (req, res) => {
+  console.log("inside update admin info method");
+  const username = req.body.username;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const email = req.body.email;
+  const contact = req.body.contact;
+  const sqlAssign =
+    "update admin set (firstName,lastName,email, contact) VALUES (?,?,?,?) where (username) values (?);";
+  db.query(
+    sqlAssign,
+    [firstName, lastName, email, contact, username],
+    (err, result) => {
+      res.send("success");
+    }
+  );
+});
+
 //faculty insert
 app.post("/api/insertf", (req, res) => {
   const firstname = req.body.firstName;
@@ -306,6 +325,15 @@ app.delete("/api/deletefaculty", (req, res) => {
   const ID = req.body.id;
   const sqldelete = "DELETE FROM facultylist WHERE id=?";
   db.query(sqldelete, [ID], (err, result) => {
+    console.log(result);
+  });
+});
+
+// delete admin
+app.delete("/api/deleteAdmin", (req, res) => {
+  const username = req.body.username;
+  const sqldelete = "DELETE FROM admin WHERE UserName=?";
+  db.query(sqldelete, [username], (err, result) => {
     console.log(result);
   });
 });
@@ -475,45 +503,43 @@ app.get("/api/count_faculties", (req, res) => {
 
 app.post("/api/studentid", (req, res) => {
   const id = req.body.StudentID;
-  console.log("inside api auth id: ",id);
+  console.log("inside api auth id: ", id);
   const sqlAuth = "SELECT * FROM studentlist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
-    if(!err){
-        console.log("student sent");
-        res.send(result);
+    if (!err) {
+      console.log("student sent");
+      res.send(result);
     } else {
-      console.log("No student with this id exists",err);
+      console.log("No student with this id exists", err);
       res.status(400);
       res.send("3");
     }
   });
 });
 app.post("/api/deletes", (req, res) => {
-  
   const id = req.body.StudentID;
-  console.log("inside api delete id: ",id);
+  console.log("inside api delete id: ", id);
   const sqlAuth = "DELETE FROM studentlist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
-    if(!err){
-        console.log("student deleted");
-        res.send(result);
+    if (!err) {
+      console.log("student deleted");
+      res.send(result);
     } else {
-      console.log("invalid id",err);
+      console.log("invalid id", err);
       res.send("bekaar");
     }
   });
 });
 app.post("/api/deletef", (req, res) => {
-  
   const id = req.body.FacultyID;
-  console.log("inside faculty api delete id: ",id);
+  console.log("inside faculty api delete id: ", id);
   const sqlAuth = "DELETE FROM facultylist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
-    if(!err){
-        console.log("faculty deleted");
-        res.send(result);
+    if (!err) {
+      console.log("faculty deleted");
+      res.send(result);
     } else {
-      console.log("invalid id",err);
+      console.log("invalid id", err);
       res.send("bekaar");
     }
   });
