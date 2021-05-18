@@ -541,13 +541,14 @@ app.listen(port, () => {
 app.post("/api/studentid", (req, res) => {
   const id = req.body.id;
   console.log("inside apii auth id: ",id);
+
   const sqlAuth = "SELECT * FROM studentlist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
-    if(!err){
-        console.log("student sent");
-        res.send(result);
+    if (!err) {
+      console.log("student sent");
+      res.send(result);
     } else {
-      console.log("No student with this id exists",err);
+      console.log("No student with this id exists", err);
       res.status(400);
       res.send("3");
     }
@@ -556,16 +557,85 @@ app.post("/api/studentid", (req, res) => {
 
 app.post("/api/facultyid", (req, res) => {
   const id = req.body.FacultyID;
-  console.log("inside api auth id: ",id);
+  console.log("inside api auth id: ", id);
   const sqlAuth = "SELECT * FROM facultylist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
-    if(!err){
-        console.log("faculty sent");
-        res.send(result);
+    if (!err) {
+      console.log("faculty sent");
+      res.send(result);
     } else {
-      console.log("No faculty with this id exists",err);
+      console.log("No faculty with this id exists", err);
       res.status(400);
       res.send("3");
     }
   });
-})
+});
+
+// insert courses
+app.post("/api/insertc", (req, res) => {
+  const coursename = req.body.courseName;
+  const courseid = req.body.courseID;
+  const faculty = req.body.facultyInCharge;
+
+  console.log(
+    "info received : ",
+    coursename,
+    " ",
+    courseid,
+    " ",
+    faculty
+  );
+
+  const sqlCheck = "SELECT * FROM courselist";
+  const sqlInsert =
+    "INSERT INTO courselist(courseName,courseID,facultyInCharge) VALUES (?,?,?);";
+  const sqlAuth = "SELECT * FROM courselist WHERE courseName=?";
+  db.query(
+    sqlInsert,
+    [coursename, courseid, faculty],
+    (err, result) => {
+      if (err) {
+        // res.send("DB insert query error");
+        console.log(err);
+        db.query(sqlCheck, (e, r) => {
+          if (e) {
+            r.send("extracting info failed");
+            return;
+          }
+          console.log(r);
+        });
+        return;
+      }
+      console.log(result);
+      res.send("success");
+      console.log("Successfully inserted data");
+    }
+  );
+});
+
+
+// get course id
+app.post("/api/courseid", (req, res) => {
+  const id = req.body.courseID;
+  console.log("inside api auth id: ", id);
+  const sqlAuth = "SELECT * FROM courselist WHERE courseID=?;";
+  db.query(sqlAuth, [id], (err, result) => {
+    if (!err) {
+      console.log("course data sent");
+      res.send(result);
+    } else {
+      console.log("No course with this id exists", err);
+      res.status(400);
+      res.send("3");
+    }
+  });
+});
+
+// delete course
+app.delete("/api/deletecourse", (req, res) => {
+  const ID = req.body.courseID;
+  const sqldelete = "DELETE FROM courselist WHERE courseID=?";
+  db.query(sqldelete, [ID], (err, result) => {
+    console.log(result);
+  });
+});
