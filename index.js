@@ -550,3 +550,36 @@ app.post("/api/deletef", (req, res) => {
 app.listen(port, () => {
   console.log(`College Scape listening at http://localhost:${port}`);
 });
+
+
+app.post("/api/studentid", (req, res) => {
+  const id = req.body.StudentID;
+  console.log("inside api auth id: ",id);
+  const sqlAuth = "SELECT * FROM studentlist WHERE id=?;";
+  db.query(sqlAuth, [id], (err, result) => {
+    if(!err){
+        console.log("student sent");
+        res.send(result);
+    } else {
+      console.log("No student with this id exists",err);
+      res.status(400);
+      res.send("3");
+    }
+  });
+})
+
+app.post("/api/facultyid", (req, res) => {
+  const id = req.body.FacultyID;
+  console.log("inside api auth id: ",id);
+  const sqlAuth = "SELECT * FROM facultylist WHERE id=?;";
+  db.query(sqlAuth, [id], (err, result) => {
+    if(!err){
+        console.log("faculty sent");
+        res.send(result);
+    } else {
+      console.log("No faculty with this id exists",err);
+      res.status(400);
+      res.send("3");
+    }
+  });
+})
