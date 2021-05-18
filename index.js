@@ -504,21 +504,7 @@ app.get("/api/count_faculties", (req, res) => {
   // console.log("count faculty",ctr_faculty);
 });
 
-app.post("/api/studentid", (req, res) => {
-  const id = req.body.StudentID;
-  console.log("inside api auth id: ", id);
-  const sqlAuth = "SELECT * FROM studentlist WHERE id=?;";
-  db.query(sqlAuth, [id], (err, result) => {
-    if (!err) {
-      console.log("student sent");
-      res.send(result);
-    } else {
-      console.log("No student with this id exists", err);
-      res.status(400);
-      res.send("3");
-    }
-  });
-});
+
 app.post("/api/deletes", (req, res) => {
   const id = req.body.StudentID;
   console.log("inside api delete id: ", id);
@@ -553,8 +539,9 @@ app.listen(port, () => {
 
 
 app.post("/api/studentid", (req, res) => {
-  const id = req.body.StudentID;
-  console.log("inside api auth id: ", id);
+  const id = req.body.id;
+  console.log("inside apii auth id: ",id);
+
   const sqlAuth = "SELECT * FROM studentlist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
     if (!err) {
