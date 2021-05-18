@@ -556,7 +556,7 @@ app.post("/api/studentid", (req, res) => {
 })
 
 app.post("/api/facultyid", (req, res) => {
-  const id = req.body.FacultyID;
+  const id = req.body.id;
   console.log("inside api auth id: ", id);
   const sqlAuth = "SELECT * FROM facultylist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
@@ -637,5 +637,22 @@ app.delete("/api/deletecourse", (req, res) => {
   const sqldelete = "DELETE FROM courselist WHERE courseID=?";
   db.query(sqldelete, [ID], (err, result) => {
     console.log(result);
+  });
+});
+
+
+app.post("/api/stud_course", (req, res) => {
+  const id = req.body.courseID;
+  console.log("inside api auth id: ", id);
+  const sqlAuth = "SELECT * FROM studentcourses WHERE studentID=?;";
+  db.query(sqlAuth, [id], (err, result) => {
+    if (!err) {
+      console.log("student's course data sent");
+      res.send(result);
+    } else {
+      console.log("No student with this id exists", err);
+      res.status(400);
+      res.send("3");
+    }
   });
 });
