@@ -237,17 +237,28 @@ app.post("/api/inserts", (req, res) => {
 app.put("/api/update_student", (req, res) => {
   console.log("inside update stud info method");
   const ID = req.body.id;
-  const emailaddr = req.body.email;
-  const sqlUpdate = "UPDATE studentlist SET email=? WHERE id =?;";
-  db.query(sqlUpdate, [emailaddr, ID], (err, result) => {
-    if (err) {
-      console.log(err);
-      res.send("failed to update data");
-      return;
+  const fName = req.body.fName;
+  const lName = req.body.lName;
+  const batch = req.body.batch;
+  const contact = req.body.contact;
+  const dob = req.body.dob;
+  const gender = req.body.gender;
+  const email = req.body.email;
+  const sqlUpdate =
+    "UPDATE studentlist SET firstName = ?, lastName = ? ,batch = ? ,contact = ?, DOB = ?, gender = ? ,email = ?   WHERE id =?;";
+  db.query(
+    sqlUpdate,
+    [fName, lName, batch, contact, dob, gender, email, ID],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send("failed to update data");
+        return;
+      }
+      console.log("Student info Updated");
+      res.send("success");
     }
-    console.log("email id changed to: ", emailaddr);
-    res.send("success");
-  });
+  );
 });
 
 //update admin
@@ -519,7 +530,6 @@ app.get("/api/count_faculties", (req, res) => {
   // console.log("count faculty",ctr_faculty);
 });
 
-
 app.post("/api/deletes", (req, res) => {
   const id = req.body.StudentID;
   console.log("inside api delete id: ", id);
@@ -552,10 +562,9 @@ app.listen(port, () => {
   console.log(`College Scape listening at http://localhost:${port}`);
 });
 
-
 app.post("/api/studentid", (req, res) => {
   const id = req.body.id;
-  console.log("inside apii auth id: ",id);
+  console.log("inside apii auth id: ", id);
 
   const sqlAuth = "SELECT * FROM studentlist WHERE id=?;";
   db.query(sqlAuth, [id], (err, result) => {
@@ -568,7 +577,7 @@ app.post("/api/studentid", (req, res) => {
       res.send("3");
     }
   });
-})
+});
 
 app.post("/api/facultyid", (req, res) => {
   const id = req.body.id;
@@ -592,42 +601,30 @@ app.post("/api/insertc", (req, res) => {
   const courseid = req.body.courseID;
   const faculty = req.body.facultyInCharge;
 
-  console.log(
-    "info received : ",
-    coursename,
-    " ",
-    courseid,
-    " ",
-    faculty
-  );
+  console.log("info received : ", coursename, " ", courseid, " ", faculty);
 
   const sqlCheck = "SELECT * FROM courselist";
   const sqlInsert =
     "INSERT INTO courselist(courseName,courseID,facultyInCharge) VALUES (?,?,?);";
   const sqlAuth = "SELECT * FROM courselist WHERE courseName=?";
-  db.query(
-    sqlInsert,
-    [coursename, courseid, faculty],
-    (err, result) => {
-      if (err) {
-        // res.send("DB insert query error");
-        console.log(err);
-        db.query(sqlCheck, (e, r) => {
-          if (e) {
-            r.send("extracting info failed");
-            return;
-          }
-          console.log(r);
-        });
-        return;
-      }
-      console.log(result);
-      res.send("success");
-      console.log("Successfully inserted data");
+  db.query(sqlInsert, [coursename, courseid, faculty], (err, result) => {
+    if (err) {
+      // res.send("DB insert query error");
+      console.log(err);
+      db.query(sqlCheck, (e, r) => {
+        if (e) {
+          r.send("extracting info failed");
+          return;
+        }
+        console.log(r);
+      });
+      return;
     }
-  );
+    console.log(result);
+    res.send("success");
+    console.log("Successfully inserted data");
+  });
 });
-
 
 // get course id
 app.post("/api/courseid", (req, res) => {
@@ -654,7 +651,6 @@ app.delete("/api/deletecourse", (req, res) => {
     console.log(result);
   });
 });
-
 
 app.post("/api/stud_course", (req, res) => {
   const id = req.body.courseID;
