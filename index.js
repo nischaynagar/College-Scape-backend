@@ -80,6 +80,21 @@ app.get("/api/facts", (req, res) => {
   });
 });
 
+// display courses list
+app.get("/api/coursedisp", (req, res) => {
+  console.log("get courses");
+  let myq = "select * from courselist";
+  db.query(myq, [], (err, result) => {
+    if (err) {
+      console.log("Err:", err);
+      res.send("Bad time bro");
+    } else {
+      console.log("Courses list ", result);
+      res.send(result);
+    }
+  });
+});
+
 // register
 // const UserName = "admin@123";
 // const firstName = "Nischay";
