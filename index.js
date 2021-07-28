@@ -149,18 +149,17 @@ app.get("/api/auth", (req, res) => {
   const username = req.query.AdminUserName;
   const pass = req.query.AdminPassword;
   console.log("inside api auth");
-  const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
-  db.query(sqlAuth, [username], (err, result) => {
-    if (result.length > 0) {
-      if (pass === result[0].Password) {
+  // const sqlAuth = "SELECT * FROM admin WHERE UserName=? ";
+  
+      if (pass === "123" && username==="admin") {
         console.log("username and pass matched");
         res.send({
           result: 1,
-          username: result[0].UserName,
-          firstName: result[0].firstName,
-          lastName: result[0].lastName,
-          email: result[0].email,
-          contact: result[0].contact,
+          // username: result[0].UserName,
+          // firstName: result[0].firstName,
+          // lastName: result[0].lastName,
+          // email: result[0].email,
+          // contact: result[0].contact,
         });
       } else {
         console.log("username and pass dont match");
@@ -168,12 +167,6 @@ app.get("/api/auth", (req, res) => {
           result: 2,
         });
       }
-    } else {
-      console.log("No user with this username exists");
-      res.status(400);
-      res.send("3");
-    }
-  });
 });
 
 // student insert
